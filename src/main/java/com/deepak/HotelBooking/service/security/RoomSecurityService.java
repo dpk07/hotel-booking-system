@@ -2,7 +2,6 @@ package com.deepak.HotelBooking.service.security;
 
 import com.deepak.HotelBooking.model.Receptionist;
 import com.deepak.HotelBooking.model.Room;
-import com.deepak.HotelBooking.model.RoomType;
 import com.deepak.HotelBooking.repository.RoomRepository;
 import com.deepak.HotelBooking.repository.RoomTypeRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,7 +18,7 @@ public class RoomSecurityService {
 
     public boolean hasAccessToEditRoom(Room room) {
         Long hotelId = getHotelId();
-        int count = roomRepository.countByRoomTypeIdAndHotelId(hotelId,room.getId());
+        int count = roomRepository.countByRoomIdAndHotelId(hotelId,room.getId());
         return count==1;
     }
 

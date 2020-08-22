@@ -11,10 +11,20 @@ import javax.validation.constraints.NotBlank;
 public class Room extends BaseEntity{
     @ManyToOne(optional = false)
     private RoomType roomType;
+    @ManyToOne(optional = false)
+    private Hotel hotel;
     @NotBlank
     private String name;
 
     public Room() {
+    }
+
+    public Hotel getHotel() {
+        return hotel;
+    }
+
+    public void setHotel(Hotel hotel) {
+        this.hotel = hotel;
     }
 
     public RoomType getRoomType() {

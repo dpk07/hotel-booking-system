@@ -10,13 +10,24 @@ import java.time.LocalDate;
 @Entity
 public class PriceSurge extends DateRange{
     @ManyToOne(optional = false)
+    private Hotel hotel;
+    @ManyToOne(optional = false)
     private RoomType roomType;
     @NotNull
     private BigDecimal price;
 
     public PriceSurge() {
     }
-    public PriceSurge(RoomType roomType,LocalDate startDate,LocalDate endDate,BigDecimal price){
+
+    public Hotel getHotel() {
+        return hotel;
+    }
+
+    public void setHotel(Hotel hotel) {
+        this.hotel = hotel;
+    }
+
+    public PriceSurge(RoomType roomType, LocalDate startDate, LocalDate endDate, BigDecimal price){
         super(startDate,endDate);
         this.roomType = roomType;
         this.price = price;
