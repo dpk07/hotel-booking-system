@@ -5,11 +5,13 @@ import org.hibernate.annotations.Fetch;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 public class Room extends BaseEntity{
-    @ManyToOne
+    @ManyToOne(optional = false)
     private RoomType roomType;
+    @NotBlank
     private String name;
 
     public Room() {

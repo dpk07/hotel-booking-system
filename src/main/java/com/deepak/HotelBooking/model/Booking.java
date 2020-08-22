@@ -4,22 +4,22 @@ import org.apache.tomcat.jni.Local;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
-public class Booking extends BaseEntity {
-    @ManyToOne
+public class Booking extends DateRange {
+    @ManyToOne(optional = false)
     private Hotel hotel;
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Room room;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    @NotBlank
     int numberOfNights;
     private BigDecimal price;
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Customer customer;
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Receptionist receptionist;
 
     public Booking() {
@@ -31,22 +31,6 @@ public class Booking extends BaseEntity {
 
     public void setRoom(Room room) {
         this.room = room;
-    }
-
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
     }
 
     public int getNumberOfNights() {

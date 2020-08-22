@@ -1,19 +1,26 @@
 package com.deepak.HotelBooking.model;
 
-import com.sun.istack.NotNull;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import javax.validation.constraints.NotNull;
 
+import javax.persistence.MappedSuperclass;
 import java.time.LocalDate;
 
-
-public class DateRange {
-    @NotNull
+@MappedSuperclass
+public class DateRange extends BaseEntity {
+    @NotNull(message = "Start Date cannot be empty.")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate startDate;
-    @NotNull
+    @NotNull(message = "End Date cannot be empty.")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate endDate;
 
     public DateRange(LocalDate startDate, LocalDate endDate) {
         this.startDate = startDate;
         this.endDate = endDate;
+    }
+    public DateRange(){
+
     }
 
     public LocalDate getStartDate() {

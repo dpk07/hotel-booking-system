@@ -4,13 +4,17 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Entity
 public class RoomType extends BaseEntity{
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Hotel hotel;
+    @NotBlank
     private String name;
+    @NotNull
     private BigDecimal price;
 
     public RoomType() {

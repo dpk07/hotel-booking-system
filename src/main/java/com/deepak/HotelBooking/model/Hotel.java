@@ -2,16 +2,24 @@ package com.deepak.HotelBooking.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 public class Hotel extends BaseEntity{
+    @NotBlank
     private String name;
+    @NotBlank
     private String address;
+    @NotBlank
     private String city;
+    @NotBlank
     private String state;
+    @NotBlank
     private String country;
+    @NotBlank
     private String zipCode;
     @Column(unique=true)
+    @NotBlank
     private String phoneNumber;
 
     public Hotel() {

@@ -6,15 +6,19 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotBlank;
 import java.util.Collection;
 
 @Entity
 public class Receptionist extends BaseEntity implements UserDetails {
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Hotel hotel;
+    @NotBlank
     private String name;
     @Column(unique = true)
+    @NotBlank
     private String userName;
+    @NotBlank
     private String password;
     public Receptionist() {
     }

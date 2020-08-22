@@ -1,23 +1,24 @@
 package com.deepak.HotelBooking.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.sun.istack.NotNull;
+
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 @Entity
-public class PriceSurge extends BaseEntity{
-    @ManyToOne
+public class PriceSurge extends DateRange{
+    @ManyToOne(optional = false)
     private RoomType roomType;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    @NotNull
     private BigDecimal price;
 
     public PriceSurge() {
     }
     public PriceSurge(RoomType roomType,LocalDate startDate,LocalDate endDate,BigDecimal price){
+        super(startDate,endDate);
         this.roomType = roomType;
-        this.startDate = startDate;
-        this.endDate = endDate;
         this.price = price;
     }
 
@@ -27,22 +28,6 @@ public class PriceSurge extends BaseEntity{
 
     public void setRoomType(RoomType roomType) {
         this.roomType = roomType;
-    }
-
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
     }
 
     public BigDecimal getPrice() {
