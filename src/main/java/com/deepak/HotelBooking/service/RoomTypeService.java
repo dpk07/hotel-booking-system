@@ -1,10 +1,12 @@
 package com.deepak.HotelBooking.service;
 
+import com.deepak.HotelBooking.model.Hotel;
 import com.deepak.HotelBooking.model.RoomType;
 import com.deepak.HotelBooking.policy.RoomTypePolicy;
 import com.deepak.HotelBooking.repository.RoomTypeRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -24,28 +26,25 @@ public class RoomTypeService {
     public List<RoomType> getAllRoomTypesByHotelId(Long hotelId){
         return roomTypeRepository.findAllByHotelId(hotelId);
     }
-
+    @PreAuthorize("@roomTypeSecurityService.hasAccessToCreateRoomType(#hotelId)")
     public RoomType addRoomType(RoomType roomType,Long hotelId){
         if(roomTypePolicy.canAddRoom(hotelId)){
+            Hotel hotel = new Hotel();
+            hotel.setId(hotelId);
+            roomType.setHotel(hotel);
             return roomTypeRepository.save(roomType);
         }
         throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, roomTypeErrorMessage);
     }
-
+    @PreAuthorize("@roomTypeSecurityService.hasAccessToEditRoomType(#roomType)")
     public RoomType editRoomType(RoomType roomType){
         if(roomType.getId()==null)throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                 "Please provide Room Type Id");
 
         return roomTypeRepository.save(roomType);
     }
+    @PreAuthorize("@roomTypeSecurityService.hasAccessToEditRoomType(#roomType)")
     public void deleteRoomType(RoomType roomType){
-        checkPermission(roomType);
         roomTypeRepository.delete(roomType);
-    }
-
-    private void checkPermission(RoomType roomType){
-        int count = roomTypeRepository.countByRoomTypeIdAndHotelId(1L,roomType.getId());
-        if(count==0)throw new ResponseStatusException(HttpStatus.FORBIDDEN,
-                "You do not have authority to access this room type");
     }
 }

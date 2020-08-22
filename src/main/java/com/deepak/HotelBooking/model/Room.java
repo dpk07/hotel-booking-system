@@ -10,8 +10,6 @@ import javax.persistence.ManyToOne;
 public class Room extends BaseEntity{
     @ManyToOne
     private RoomType roomType;
-    @ManyToOne
-    private Hotel hotel;
     private String name;
 
     public Room() {
@@ -23,14 +21,6 @@ public class Room extends BaseEntity{
 
     public void setRoomType(RoomType roomType) {
         this.roomType = roomType;
-    }
-
-    public Hotel getHotel() {
-        return hotel;
-    }
-
-    public void setHotel(Hotel hotel) {
-        this.hotel = hotel;
     }
 
     public String getName() {

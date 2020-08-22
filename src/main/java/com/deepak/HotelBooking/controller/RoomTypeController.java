@@ -20,9 +20,9 @@ public class RoomTypeController {
         this.roomTypeService = roomTypeService;
     }
 
-    @PostMapping
-    public RoomType addRoomType(@RequestBody RoomType roomType){
-        return roomTypeService.addRoomType(roomType,1L);
+    @PostMapping("{hotelId}/add")
+    public RoomType addRoomType(@RequestBody RoomType roomType, @PathVariable String hotelId){
+        return roomTypeService.addRoomType(roomType,Long.parseLong(hotelId));
     }
 
     @PutMapping
