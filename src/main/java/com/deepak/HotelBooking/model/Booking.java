@@ -25,14 +25,6 @@ public class Booking extends BaseEntity {
     public Booking() {
     }
 
-    public Hotel getHotel() {
-        return hotel;
-    }
-
-    public void setHotel(Hotel hotel) {
-        this.hotel = hotel;
-    }
-
     public Room getRoom() {
         return room;
     }
@@ -87,5 +79,13 @@ public class Booking extends BaseEntity {
 
     public void setReceptionist(Receptionist receptionist) {
         this.receptionist = receptionist;
+    }
+
+    public Hotel getHotel() {
+        return hotel;
+    }
+
+    public void setHotel(Hotel hotel) {
+        this.hotel = hotel;
     }
 }

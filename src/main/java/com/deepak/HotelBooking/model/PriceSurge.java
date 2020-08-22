@@ -1,9 +1,10 @@
 package com.deepak.HotelBooking.model;
 
+import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-
+@Entity
 public class PriceSurge extends BaseEntity{
     @ManyToOne
     private RoomType roomType;
@@ -12,6 +13,12 @@ public class PriceSurge extends BaseEntity{
     private BigDecimal price;
 
     public PriceSurge() {
+    }
+    public PriceSurge(RoomType roomType,LocalDate startDate,LocalDate endDate,BigDecimal price){
+        this.roomType = roomType;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.price = price;
     }
 
     public RoomType getRoomType() {
