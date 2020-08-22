@@ -4,10 +4,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 @MappedSuperclass
 public class BaseEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     public Long getId() {

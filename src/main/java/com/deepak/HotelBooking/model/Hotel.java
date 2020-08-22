@@ -1,5 +1,6 @@
 package com.deepak.HotelBooking.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 @Entity
@@ -10,6 +11,7 @@ public class Hotel extends BaseEntity{
     private String state;
     private String country;
     private String zipCode;
+    @Column(unique=true)
     private String phoneNumber;
 
     public Hotel() {

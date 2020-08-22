@@ -1,12 +1,16 @@
 package com.deepak.HotelBooking.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 @Entity
 public class Customer extends BaseEntity {
     private String fullName;
+    @Column(unique=true)
     private String emailId;
+    @Column(unique=true)
     private String phoneNumber;
+    @Column(unique=true)
     private String panNumber;
 
     public Customer() {
