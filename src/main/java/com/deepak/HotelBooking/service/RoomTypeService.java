@@ -12,8 +12,8 @@ import java.util.List;
 
 @Service
 public class RoomTypeService {
-    private RoomTypeRepository roomTypeRepository;
-    private RoomTypePolicy roomTypePolicy;
+    private final RoomTypeRepository roomTypeRepository;
+    private final RoomTypePolicy roomTypePolicy;
     @Value("${roomType.ErrorMessage}")
     private String roomTypeErrorMessage = "";
     public RoomTypeService(RoomTypeRepository roomTypeRepository, RoomTypePolicy roomTypePolicy) {
@@ -31,12 +31,21 @@ public class RoomTypeService {
         }
         throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, roomTypeErrorMessage);
     }
+
     public RoomType editRoomType(RoomType roomType){
         if(roomType.getId()==null)throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                 "Please provide Room Type Id");
+
         return roomTypeRepository.save(roomType);
     }
     public void deleteRoomType(RoomType roomType){
+        checkPermission(roomType);
         roomTypeRepository.delete(roomType);
+    }
+
+    private void checkPermission(RoomType roomType){
+        int count = roomTypeRepository.countByRoomTypeIdAndHotelId(1L,roomType.getId());
+        if(count==0)throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                "You do not have authority to access this room type");
     }
 }

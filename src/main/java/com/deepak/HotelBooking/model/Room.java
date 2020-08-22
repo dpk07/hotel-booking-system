@@ -1,6 +1,9 @@
 package com.deepak.HotelBooking.model;
 
+import org.hibernate.annotations.Fetch;
+
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 
 @Entity
