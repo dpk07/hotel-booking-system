@@ -24,7 +24,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests().
-                antMatchers("/console/**").
+                antMatchers("/console/**"). //Enable H2 Console
                 permitAll().
                 anyRequest().
                 authenticated().and().httpBasic().and().logout();

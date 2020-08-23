@@ -1,12 +1,13 @@
-package com.deepak.HotelBooking.configuration;
+package com.deepak.HotelBooking.helper;
 
 import com.deepak.HotelBooking.model.Receptionist;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
-public class HotelIdHelper {
+public class PrincipalHelper {
     /**
+     * Gets the Hotel Id of the logged in User
      * @return Hotel Id from the User Principal
      */
     public Long getHotelId(){
@@ -17,6 +18,11 @@ public class HotelIdHelper {
         }
         return hotelId;
     }
+
+    /**
+     * Gets the User Id of the logged in User
+     * @return User Id from the USer Principal
+     */
     public Long getUserId(){
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Long userId=null;

@@ -1,12 +1,11 @@
 package com.deepak.HotelBooking.service;
 
-import com.deepak.HotelBooking.configuration.HotelIdHelper;
+import com.deepak.HotelBooking.helper.PrincipalHelper;
 import com.deepak.HotelBooking.model.*;
 import com.deepak.HotelBooking.repository.RoomRepository;
 import com.deepak.HotelBooking.repository.RoomTypeRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -17,17 +16,17 @@ import java.util.Optional;
 public class RoomService {
     private final RoomRepository roomRepository;
     private final RoomTypeRepository roomTypeRepository;
-    private final HotelIdHelper hotelIdHelper;
+    private final PrincipalHelper principalHelper;
     public RoomService(RoomRepository roomRepository,
                        RoomTypeRepository roomTypeRepository,
-                       HotelIdHelper hotelIdHelper) {
+                       PrincipalHelper principalHelper) {
         this.roomRepository = roomRepository;
         this.roomTypeRepository = roomTypeRepository;
-        this.hotelIdHelper = hotelIdHelper;
+        this.principalHelper = principalHelper;
     }
     @PreAuthorize("@roomSecurityService.hasAccessToCreateRoom(#roomTypeId)")
     public Room addRoom(Room room,Long roomTypeId) {
-        Long hotelId = hotelIdHelper.getHotelId();
+        Long hotelId = principalHelper.getHotelId();
         room.setRoomType(new RoomType(roomTypeId));
         room.setHotel(new Hotel(hotelId));
         Room savedRoom = roomRepository.save(room);

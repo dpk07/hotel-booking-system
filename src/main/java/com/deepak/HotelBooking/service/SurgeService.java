@@ -1,11 +1,10 @@
 package com.deepak.HotelBooking.service;
 
-import com.deepak.HotelBooking.configuration.HotelIdHelper;
+import com.deepak.HotelBooking.helper.PrincipalHelper;
 import com.deepak.HotelBooking.model.*;
 import com.deepak.HotelBooking.repository.SurgePriceRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -15,19 +14,20 @@ import java.util.Optional;
 @Service
 public class SurgeService {
     private final SurgePriceRepository surgePriceRepository;
-    private final HotelIdHelper hotelIdHelper;
-    public SurgeService(SurgePriceRepository surgePriceRepository,HotelIdHelper hotelIdHelper) {
+    private final PrincipalHelper principalHelper;
+    public SurgeService(SurgePriceRepository surgePriceRepository, PrincipalHelper principalHelper) {
         this.surgePriceRepository = surgePriceRepository;
-        this.hotelIdHelper = hotelIdHelper;
+        this.principalHelper = principalHelper;
     }
     @PreAuthorize("@surgeSecurityService.hasAccessToCreateSurge(#roomTypeId)")
     public PriceSurge addSurgePrice(PriceSurge priceSurge, Long roomTypeId){
         checkDateRange(priceSurge);
-        Long hotelId = hotelIdHelper.getHotelId();
+        Long hotelId = principalHelper.getHotelId();
         priceSurge.setRoomType(new RoomType(roomTypeId));
         priceSurge.setHotel(new Hotel(hotelId));
         return surgePriceRepository.save(priceSurge);
     }
+
     @PreAuthorize("@surgeSecurityService.hasAccessToEditSurge(#priceSurge)")
     public PriceSurge editSurgePrice(PriceSurge priceSurge) {
         checkDateRange(priceSurge);
@@ -53,6 +53,7 @@ public class SurgeService {
         }
         return surgePriceRepository.save(prevSurge);
     }
+
     @PreAuthorize("@surgeSecurityService.hasAccessToEditSurge(#priceSurge)")
     public void deleteSurgePrice(PriceSurge priceSurge) {
         if(priceSurge.getId()==null)throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -60,7 +61,12 @@ public class SurgeService {
         surgePriceRepository.delete(priceSurge);
     }
 
-    private void checkDateRange(PriceSurge priceSurge){
+    /**
+     * Checks if the given date range is valid.
+     * @param priceSurge Price Surge Object which needs to be checked.
+     * @throws ResponseStatusException If the endDate is before startDate
+     */
+    private void checkDateRange(PriceSurge priceSurge) throws ResponseStatusException{
         LocalDate startDate = priceSurge.getStartDate();
         LocalDate endDate = priceSurge.getEndDate();
         if(endDate.isBefore(startDate)){

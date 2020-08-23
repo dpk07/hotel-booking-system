@@ -30,10 +30,20 @@ public class PricePolicyImpl implements PricePolicy {
         this.priceHelperImpl = priceHelperImpl;
     }
 
+    /**
+     * Calculates the total price for the provided booking
+     * <p>Fetches the room price details and the surge price details from the database</p>
+     * <p>Then calculates the total price.</p>
+     * @param booking Booking object for which the price needs to be calculated.
+     * @return Total price for the provided booking.
+     */
     @Override
-    public BigDecimal getPrice(Booking booking) {
+    public BigDecimal getPrice(Booking booking) throws IllegalArgumentException {
         LocalDate startDate = booking.getStartDate();
         LocalDate endDate = booking.getEndDate();
+        if(startDate.isAfter(endDate)){
+            throw new IllegalArgumentException("End Date cannot be before start date");
+        }
         Optional<Room> optionalRoom = roomRepository.findById(booking.getRoom().getId());
         if(optionalRoom.isEmpty())throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                 "Could not find room");

@@ -1,6 +1,6 @@
 package com.deepak.HotelBooking.service;
 
-import com.deepak.HotelBooking.configuration.HotelIdHelper;
+import com.deepak.HotelBooking.helper.PrincipalHelper;
 import com.deepak.HotelBooking.model.Hotel;
 import com.deepak.HotelBooking.model.RoomType;
 import com.deepak.HotelBooking.policy.RoomTypePolicy;
@@ -17,17 +17,17 @@ import java.util.List;
 public class RoomTypeService {
     private final RoomTypeRepository roomTypeRepository;
     private final RoomTypePolicy roomTypePolicy;
-    private final HotelIdHelper hotelIdHelper;
+    private final PrincipalHelper principalHelper;
     @Value("${roomType.ErrorMessage}")
     private String roomTypeErrorMessage = "";
-    public RoomTypeService(RoomTypeRepository roomTypeRepository, RoomTypePolicy roomTypePolicy, HotelIdHelper hotelIdHelper) {
+    public RoomTypeService(RoomTypeRepository roomTypeRepository, RoomTypePolicy roomTypePolicy, PrincipalHelper principalHelper) {
         this.roomTypeRepository = roomTypeRepository;
         this.roomTypePolicy = roomTypePolicy;
-        this.hotelIdHelper = hotelIdHelper;
+        this.principalHelper = principalHelper;
     }
 
     public List<RoomType> getAllRoomTypes(){
-        Long hotelId = hotelIdHelper.getHotelId();
+        Long hotelId = principalHelper.getHotelId();
         return roomTypeRepository.findAllByHotelId(hotelId);
     }
     @PreAuthorize("@roomTypeSecurityService.hasAccessToCreateRoomType(#hotelId)")
