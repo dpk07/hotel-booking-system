@@ -5,6 +5,7 @@ import com.deepak.HotelBooking.model.DateRange;
 import com.deepak.HotelBooking.service.BookingService;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class BookingController {
         this.bookingService = bookingService;
     }
     @PostMapping
-    public Booking addBooking(@RequestBody Booking booking){
+    public Booking addBooking(@Valid @RequestBody Booking booking){
         return bookingService.addBooking(booking);
     }
     @PutMapping

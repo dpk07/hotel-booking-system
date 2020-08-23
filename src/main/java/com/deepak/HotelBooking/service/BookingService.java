@@ -1,19 +1,18 @@
 package com.deepak.HotelBooking.service;
 
 import com.deepak.HotelBooking.configuration.HotelIdHelper;
-import com.deepak.HotelBooking.model.Booking;
-import com.deepak.HotelBooking.model.DateRange;
-import com.deepak.HotelBooking.model.Hotel;
-import com.deepak.HotelBooking.model.Receptionist;
+import com.deepak.HotelBooking.model.*;
 import com.deepak.HotelBooking.policy.PricePolicy;
 import com.deepak.HotelBooking.repository.BookingRepository;
+import com.deepak.HotelBooking.repository.RoomRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,14 +21,20 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final PricePolicy pricePolicy;
     private final HotelIdHelper hotelIdHelper;
-    public BookingService(BookingRepository bookingRepository,PricePolicy pricePolicy,HotelIdHelper hotelIdHelper) {
+    private final RoomRepository roomRepository;
+    public BookingService(BookingRepository bookingRepository,
+                          PricePolicy pricePolicy,
+                          HotelIdHelper hotelIdHelper,
+                          RoomRepository roomRepository) {
         this.bookingRepository = bookingRepository;
         this.pricePolicy = pricePolicy;
         this.hotelIdHelper = hotelIdHelper;
+        this.roomRepository = roomRepository;
     }
 
     public List<Booking> getBookingsByDateRange(DateRange dateRange){
-        return bookingRepository.findByDateRange(dateRange.getStartDate(),dateRange.getEndDate());
+        Long hotelId = hotelIdHelper.getHotelId();
+        return bookingRepository.findByHotelIdAndDateRange(dateRange.getStartDate(),dateRange.getEndDate(),hotelId);
     }
     @PreAuthorize("@bookingSecurityService.hasAccessToCreateBooking(#booking)")
     public BigDecimal getPrice(Booking booking){
@@ -41,13 +46,35 @@ public class BookingService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Please provide Room Id");
         }
+        checkAvailability(booking);
         Long hotelId = hotelIdHelper.getHotelId();
-        Hotel hotel = new Hotel();
-        hotel.setId(hotelId);
         BigDecimal totalPrice = pricePolicy.getPrice(booking);
         booking.setPrice(totalPrice);
-        booking.setHotel(hotel);
-        return bookingRepository.save(booking);
+        booking.setHotel(new Hotel(hotelId));
+        booking.setReceptionist(new Receptionist(hotelIdHelper.getUserId()));
+        booking.setNumberOfNights(calculateNumberOfNights(booking));
+        Booking completed = bookingRepository.save(booking);
+        if(completed==null){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Booking could not be completed.");
+        }
+        return bookingRepository.findById(completed.getId()).get();
+    }
+
+    private Long calculateNumberOfNights(Booking booking) {
+        LocalDate startDate = booking.getStartDate();
+        LocalDate endDate = booking.getEndDate();
+        return ChronoUnit.DAYS.between(startDate, endDate);
+    }
+    private boolean checkAvailability(Booking booking){
+        Optional<Room> room = roomRepository.findByRoomIdRoomIdAndDateRange(booking.getRoom().getId(),
+                booking.getStartDate(),
+                booking.getEndDate());
+        if(room.isPresent()){
+            return true;
+        }
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                "This room is no longer available");
     }
     @PreAuthorize("@bookingSecurityService.hasAccessToEditBooking(#booking)")
     public Booking editBooking(Booking booking){

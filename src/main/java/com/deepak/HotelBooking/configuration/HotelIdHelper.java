@@ -17,4 +17,12 @@ public class HotelIdHelper {
         }
         return hotelId;
     }
+    public Long getUserId(){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId=null;
+        if (principal instanceof Receptionist) {
+            userId = ((Receptionist)principal).getId();
+        }
+        return userId;
+    }
 }

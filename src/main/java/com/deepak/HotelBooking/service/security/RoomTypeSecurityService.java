@@ -19,13 +19,16 @@ public class RoomTypeSecurityService {
 
     public boolean hasAccessToEditRoomType(RoomType roomType) {
         Long hotelId = getHotelId();
+        if(roomType.getId()==null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Room Type ID required to edit room type.");
+        }
         int count = roomTypeRepository.countByRoomTypeIdAndHotelId(hotelId,roomType.getId());
         return count==1;
     }
 
     public boolean hasAccessToCreateRoomType(Long hotelId) {
         Long principalHotelId = getHotelId();
-        return principalHotelId==hotelId;
+        return principalHotelId.equals(hotelId) ;
     }
 
     private Long getHotelId(){

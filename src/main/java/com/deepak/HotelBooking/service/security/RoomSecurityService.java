@@ -4,8 +4,10 @@ import com.deepak.HotelBooking.model.Receptionist;
 import com.deepak.HotelBooking.model.Room;
 import com.deepak.HotelBooking.repository.RoomRepository;
 import com.deepak.HotelBooking.repository.RoomTypeRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class RoomSecurityService {
@@ -18,6 +20,9 @@ public class RoomSecurityService {
 
     public boolean hasAccessToEditRoom(Room room) {
         Long hotelId = getHotelId();
+        if(room.getId()==null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Room ID required to edit room.");
+        }
         int count = roomRepository.countByRoomIdAndHotelId(hotelId,room.getId());
         return count==1;
     }

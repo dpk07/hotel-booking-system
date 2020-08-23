@@ -1,12 +1,12 @@
 package com.deepak.HotelBooking.model;
 
-import org.apache.tomcat.jni.Local;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 @Entity
 public class Booking extends DateRange {
@@ -14,12 +14,14 @@ public class Booking extends DateRange {
     private Hotel hotel;
     @ManyToOne(optional = false)
     private Room room;
-    @NotBlank
-    int numberOfNights;
+    Long numberOfNights;
     private BigDecimal price;
+
     @ManyToOne(optional = false)
     private Customer customer;
-    @ManyToOne(optional = false)
+
+    @JsonIgnore
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
     private Receptionist receptionist;
 
     public Booking() {
@@ -33,11 +35,11 @@ public class Booking extends DateRange {
         this.room = room;
     }
 
-    public int getNumberOfNights() {
+    public Long getNumberOfNights() {
         return numberOfNights;
     }
 
-    public void setNumberOfNights(int numberOfNights) {
+    public void setNumberOfNights(Long numberOfNights) {
         this.numberOfNights = numberOfNights;
     }
 

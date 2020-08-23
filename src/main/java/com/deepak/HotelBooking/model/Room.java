@@ -1,5 +1,7 @@
 package com.deepak.HotelBooking.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Fetch;
 
 import javax.persistence.Entity;
@@ -11,7 +13,8 @@ import javax.validation.constraints.NotBlank;
 public class Room extends BaseEntity{
     @ManyToOne(optional = false)
     private RoomType roomType;
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
+    @JsonIgnore
     private Hotel hotel;
     @NotBlank
     private String name;

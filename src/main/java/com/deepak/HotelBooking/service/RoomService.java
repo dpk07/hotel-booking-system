@@ -1,10 +1,7 @@
 package com.deepak.HotelBooking.service;
 
 import com.deepak.HotelBooking.configuration.HotelIdHelper;
-import com.deepak.HotelBooking.model.Hotel;
-import com.deepak.HotelBooking.model.Receptionist;
-import com.deepak.HotelBooking.model.Room;
-import com.deepak.HotelBooking.model.RoomType;
+import com.deepak.HotelBooking.model.*;
 import com.deepak.HotelBooking.repository.RoomRepository;
 import com.deepak.HotelBooking.repository.RoomTypeRepository;
 import org.springframework.http.HttpStatus;
@@ -13,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,13 +28,12 @@ public class RoomService {
     @PreAuthorize("@roomSecurityService.hasAccessToCreateRoom(#roomTypeId)")
     public Room addRoom(Room room,Long roomTypeId) {
         Long hotelId = hotelIdHelper.getHotelId();
-        Hotel hotel = new Hotel();
-        hotel.setId(hotelId);
-        RoomType roomType = new RoomType();
-        roomType.setId(roomTypeId);
-        room.setRoomType(roomType);
-        room.setHotel(hotel);
-        return roomRepository.save(room);
+        room.setRoomType(new RoomType(roomTypeId));
+        room.setHotel(new Hotel(hotelId));
+        Room savedRoom = roomRepository.save(room);
+        if(savedRoom==null)throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                "Room could not be added");
+        return roomRepository.findById(savedRoom.getId()).get();
     }
     @PreAuthorize("@roomSecurityService.hasAccessToEditRoom(#room)")
     public Room editRoom(Room room) {
@@ -64,4 +61,10 @@ public class RoomService {
         roomRepository.delete(room);
     }
 
+    @PreAuthorize("@roomSecurityService.hasAccessToCreateRoom(#roomTypeId)")
+    public List<Room> findRooms(DateRange dateRange, Long roomTypeId){
+        return roomRepository.findByRoomTypeIdAndDateRange(roomTypeId,
+                dateRange.getStartDate(),
+                dateRange.getEndDate());
+    }
 }

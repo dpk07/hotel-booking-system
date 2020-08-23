@@ -24,6 +24,9 @@ public class Hotel extends BaseEntity{
 
     public Hotel() {
     }
+    public Hotel(Long id){
+        this.setId(id);
+    }
 
     public String getName() {
         return name;

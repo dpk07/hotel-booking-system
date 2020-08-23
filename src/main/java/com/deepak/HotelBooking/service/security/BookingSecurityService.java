@@ -5,7 +5,9 @@ import com.deepak.HotelBooking.model.Booking;
 import com.deepak.HotelBooking.model.Hotel;
 import com.deepak.HotelBooking.repository.BookingRepository;
 import com.deepak.HotelBooking.repository.RoomRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class BookingSecurityService {
@@ -25,6 +27,9 @@ public class BookingSecurityService {
             if(!hotel.getId().equals(hotelId)){
                 return false;
             }
+        }
+        if(booking.getId()==null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Booking ID required to edit booking.");
         }
         int count = bookingRepository.countByBookingIdAndHotelId(hotelId,booking.getId());
         return count==1;

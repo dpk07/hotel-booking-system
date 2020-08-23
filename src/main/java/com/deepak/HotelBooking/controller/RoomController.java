@@ -1,8 +1,11 @@
 package com.deepak.HotelBooking.controller;
 
+import com.deepak.HotelBooking.model.DateRange;
 import com.deepak.HotelBooking.model.Room;
 import com.deepak.HotelBooking.service.RoomService;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/room")
@@ -15,6 +18,10 @@ public class RoomController {
     @PostMapping("{roomTypeId}/add")
     public Room addRoom(@RequestBody Room room, @PathVariable String roomTypeId){
         return roomService.addRoom(room,Long.parseLong(roomTypeId));
+    }
+    @PostMapping("{roomTypeId}/find")
+    public List<Room> addRoom(@RequestBody DateRange range, @PathVariable String roomTypeId){
+        return roomService.findRooms(range,Long.parseLong(roomTypeId));
     }
 
     @PutMapping
