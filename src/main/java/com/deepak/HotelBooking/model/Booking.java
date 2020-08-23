@@ -10,7 +10,8 @@ import java.math.BigDecimal;
 
 @Entity
 public class Booking extends DateRange {
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
+    @JsonIgnore
     private Hotel hotel;
     @ManyToOne(optional = false)
     private Room room;

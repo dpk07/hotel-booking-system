@@ -1,5 +1,5 @@
 const baseUrl = "http://localhost:8080";
-export { login };
+export { login, getAllRoomTypes };
 
 const login = (username, password) => {
   const requestOptions = {
@@ -10,5 +10,13 @@ const login = (username, password) => {
     }),
   };
   const url = baseUrl + "/login";
+  return fetch(url, requestOptions);
+};
+
+const getAllRoomTypes = () => {
+  const requestOptions = {
+    method: "GET",
+  };
+  const url = baseUrl + "/roomType";
   return fetch(url, requestOptions);
 };

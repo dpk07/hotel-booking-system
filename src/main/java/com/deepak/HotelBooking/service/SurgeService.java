@@ -1,10 +1,7 @@
 package com.deepak.HotelBooking.service;
 
 import com.deepak.HotelBooking.configuration.HotelIdHelper;
-import com.deepak.HotelBooking.model.Hotel;
-import com.deepak.HotelBooking.model.PriceSurge;
-import com.deepak.HotelBooking.model.Receptionist;
-import com.deepak.HotelBooking.model.RoomType;
+import com.deepak.HotelBooking.model.*;
 import com.deepak.HotelBooking.repository.SurgePriceRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -24,17 +22,15 @@ public class SurgeService {
     }
     @PreAuthorize("@surgeSecurityService.hasAccessToCreateSurge(#roomTypeId)")
     public PriceSurge addSurgePrice(PriceSurge priceSurge, Long roomTypeId){
+        checkDateRange(priceSurge);
         Long hotelId = hotelIdHelper.getHotelId();
-        Hotel hotel = new Hotel();
-        hotel.setId(hotelId);
-        RoomType roomType = new RoomType();
-        roomType.setId(roomTypeId);
-        priceSurge.setRoomType(roomType);
-        priceSurge.setHotel(hotel);
+        priceSurge.setRoomType(new RoomType(roomTypeId));
+        priceSurge.setHotel(new Hotel(hotelId));
         return surgePriceRepository.save(priceSurge);
     }
     @PreAuthorize("@surgeSecurityService.hasAccessToEditSurge(#priceSurge)")
     public PriceSurge editSurgePrice(PriceSurge priceSurge) {
+        checkDateRange(priceSurge);
         if(priceSurge.getId()==null)throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                 "Please provide Surge Id");
         Optional<PriceSurge> prevObject = surgePriceRepository.findById(priceSurge.getId());
@@ -62,5 +58,14 @@ public class SurgeService {
         if(priceSurge.getId()==null)throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                 "Please provide Surge Id");
         surgePriceRepository.delete(priceSurge);
+    }
+
+    private void checkDateRange(PriceSurge priceSurge){
+        LocalDate startDate = priceSurge.getStartDate();
+        LocalDate endDate = priceSurge.getEndDate();
+        if(endDate.isBefore(startDate)){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "End Date cannot be before Start Date");
+        }
     }
 }

@@ -20,7 +20,7 @@ public class RoomController {
         return roomService.addRoom(room,Long.parseLong(roomTypeId));
     }
     @PostMapping("{roomTypeId}/find")
-    public List<Room> addRoom(@RequestBody DateRange range, @PathVariable String roomTypeId){
+    public List<Room> findRoom(@RequestBody DateRange range, @PathVariable String roomTypeId){
         return roomService.findRooms(range,Long.parseLong(roomTypeId));
     }
 

@@ -2,13 +2,8 @@ package com.deepak.HotelBooking.controller;
 
 import com.deepak.HotelBooking.model.RoomType;
 import com.deepak.HotelBooking.service.RoomTypeService;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -36,11 +31,6 @@ public class RoomTypeController {
     }
     @GetMapping
     public List<RoomType> getAllRoomTypes(){
-        return roomTypeService.getAllRoomTypesByHotelId(1L);
-    }
-
-    @PostMapping("/date")
-    public List<RoomType> getAllRoomTypesByDateRange(RoomType roomType){
-        return new ArrayList<RoomType>();
+        return roomTypeService.getAllRoomTypes();
     }
 }

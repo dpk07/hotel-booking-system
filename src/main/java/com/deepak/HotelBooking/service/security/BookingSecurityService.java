@@ -6,8 +6,11 @@ import com.deepak.HotelBooking.model.Hotel;
 import com.deepak.HotelBooking.repository.BookingRepository;
 import com.deepak.HotelBooking.repository.RoomRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.time.LocalDate;
 
 @Service
 public class BookingSecurityService {
@@ -41,6 +44,7 @@ public class BookingSecurityService {
         int count = roomRepository.countByRoomIdAndHotelId(hotelId,roomId);
         return count==1;
     }
+
 
 
 }

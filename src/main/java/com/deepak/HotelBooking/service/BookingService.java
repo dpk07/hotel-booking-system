@@ -36,16 +36,19 @@ public class BookingService {
         Long hotelId = hotelIdHelper.getHotelId();
         return bookingRepository.findByHotelIdAndDateRange(dateRange.getStartDate(),dateRange.getEndDate(),hotelId);
     }
+
     @PreAuthorize("@bookingSecurityService.hasAccessToCreateBooking(#booking)")
     public BigDecimal getPrice(Booking booking){
     return pricePolicy.getPrice(booking);
     }
+
     @PreAuthorize("@bookingSecurityService.hasAccessToCreateBooking(#booking)")
     public Booking addBooking (Booking booking){
         if(booking.getRoom().getId()==null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Please provide Room Id");
         }
+        checkDateRange(booking);
         checkAvailability(booking);
         Long hotelId = hotelIdHelper.getHotelId();
         BigDecimal totalPrice = pricePolicy.getPrice(booking);
@@ -66,6 +69,7 @@ public class BookingService {
         LocalDate endDate = booking.getEndDate();
         return ChronoUnit.DAYS.between(startDate, endDate);
     }
+
     private boolean checkAvailability(Booking booking){
         Optional<Room> room = roomRepository.findByRoomIdRoomIdAndDateRange(booking.getRoom().getId(),
                 booking.getStartDate(),
@@ -76,8 +80,10 @@ public class BookingService {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                 "This room is no longer available");
     }
+
     @PreAuthorize("@bookingSecurityService.hasAccessToEditBooking(#booking)")
     public Booking editBooking(Booking booking){
+        checkDateRange(booking);
         if(booking.getId()==null)throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                 "Please provide Booking Id");
         BigDecimal totalPrice = pricePolicy.getPrice(booking);
@@ -105,6 +111,7 @@ public class BookingService {
         prevBooking.setPrice(totalPrice);
         return bookingRepository.save(prevBooking);
     }
+
     @PreAuthorize("@bookingSecurityService.hasAccessToEditBooking(#booking)")
     public void deleteBooking(Booking booking){
         if(booking.getId()==null)throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -112,4 +119,12 @@ public class BookingService {
         bookingRepository.delete(booking);
     }
 
+    private void checkDateRange(Booking booking){
+        LocalDate startDate = booking.getStartDate();
+        LocalDate endDate = booking.getEndDate();
+        if(endDate.isBefore(startDate)||endDate.isEqual(startDate)){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "End Date cannot be same or before Start Date");
+        }
+    }
 }
