@@ -1,6 +1,7 @@
 package com.deepak.HotelBooking.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 
 import javax.persistence.Entity;
@@ -11,8 +12,9 @@ import java.time.LocalDate;
 @Entity
 public class PriceSurge extends DateRange{
     @ManyToOne(optional = false,fetch = FetchType.LAZY)
+    @JsonIgnore
     private Hotel hotel;
-    @ManyToOne(optional = false,fetch = FetchType.LAZY)
+    @ManyToOne(optional = false)
     private RoomType roomType;
     @NotNull
     private BigDecimal price;

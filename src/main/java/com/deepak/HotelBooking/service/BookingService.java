@@ -39,6 +39,7 @@ public class BookingService {
 
     @PreAuthorize("@bookingSecurityService.hasAccessToCreateBooking(#booking)")
     public BigDecimal getPrice(Booking booking){
+    checkDateRange(booking);
     return pricePolicy.getPrice(booking);
     }
 
