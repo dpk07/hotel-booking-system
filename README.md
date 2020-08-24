@@ -64,6 +64,6 @@ The default username is `username` and the default password is `password`.
 
 |Spring Boot Configuration | Class or Java property files  |
 |--------------------------|---|
-|The Main Class | [HotelBookingApplication](https://github.com/dpk07/hotel-booking-system/blob/1.0.0/src/main/java/com/deepak/HotelBooking/HotelBookingApplication.java) |
-|Properties Files | [application.properties](https://github.com/dpk07/hotel-booking-system/blob/1.0.0/src/main/resources/application.properties) |
-|Default DB Seed Data| [data.sql](https://github.com/dpk07/hotel-booking-system/blob/1.0.0/src/main/resources/data.sql) |
+|The Main Class | [HotelBookingApplication](https://github.com/dpk07/hotel-booking-system/blob/master/src/main/java/com/deepak/HotelBooking/HotelBookingApplication.java) |
+|Properties Files | [application.properties](https://github.com/dpk07/hotel-booking-system/blob/master/src/main/resources/application.properties) |
+|Default DB Seed Data| [data.sql](https://github.com/dpk07/hotel-booking-system/blob/master/src/main/resources/data.sql) |
